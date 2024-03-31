@@ -6,6 +6,15 @@ Config :: struct {
     sections: [dynamic]^Section,
 }
 
+new_config :: proc(name: string) -> ^Config {
+    p := new(Config)
+    p.name = name
+    p.keys = make(map[string]string)
+    p.sections = make([dynamic]^Section, 0)
+
+    return p
+}
+
 set :: proc{set_key, set_section}
 
 set_key :: proc(c: ^Config, key: string, value: string) {
