@@ -3,7 +3,6 @@ package ini
 import "core:strings"
 
 TokenType :: enum {
-    COMMENT,
     KEY,
     VALUE,
     LB,
@@ -22,7 +21,7 @@ Token :: struct {
     col: int
 }
 
-lex :: proc(input: string) -> ^Parser {
+lex :: proc(input: string) -> [dynamic]Token {
     tokens: [dynamic]Token
     line: int = 1
     col: int = 1
@@ -47,16 +46,8 @@ lex :: proc(input: string) -> ^Parser {
                 col += 1
                 i += 1
             case '#', ';':
-                buffer := strings.builder_make_none()
-                for i < len(input) && (input[i] != '\n' && input[i] != 0) {
-                    strings.write_byte(&buffer, input[i])
-                    col += 1
-                    i += 1
-                }
-                append(&tokens, Token{.COMMENT, strings.clone(strings.to_string(buffer)), line, col})
                 col += 1
                 i += 1
-                strings.builder_destroy(&buffer)
             case '\n':
                 append(&tokens, Token{.EOL, "\n", line, col})
                 line += 1
@@ -77,5 +68,5 @@ lex :: proc(input: string) -> ^Parser {
                 strings.builder_destroy(&buffer)
          }
     }
-    return Parser{tokens, }
+    return tokens
 }
