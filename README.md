@@ -7,7 +7,7 @@
 </p>
 
 <p align="center">
-<a href="./LICENSE.md"><img src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+<a href="./LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
 <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/hrszpuk/odin-ini">
 <a href="https://github.com/hrszpuk/odin-ini/issues"><img src="https://img.shields.io/github/issues/hrszpuk/odin-ini"></a>
 </p>
