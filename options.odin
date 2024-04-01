@@ -1,5 +1,5 @@
 package ini
-
+/*
 import "core:bufio"
 
 Options :: struct {
@@ -89,3 +89,4 @@ GlobalOptions : Options = {
 
     false, // Debug
 }
+*/
