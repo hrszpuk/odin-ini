@@ -5,6 +5,8 @@
 - [Getting Started](getting_started/index.md)
   - [Parsing INI Files](getting_started/parsing_ini_files.md)
   - [Creating INI Files](getting_started/creating_ini_files.md)
+  - [Modifying INI Files](getting_started/modifying_ini_files.md)
+  - [Getting Data from a Config](getting_started/getting_data_from_a_config.md)
   - [Serializing INI Files](getting_started/serializing_ini_files.md)
 - [Advanced Usage](advanced_usage/index.md)
   - [Configuration Options](advanced_usage/configuration_options.md)
