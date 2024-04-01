@@ -1,5 +1,5 @@
 package ini
-
+/*
 import "core:os"
 import "core:fmt"
 
@@ -38,4 +38,4 @@ throw_error :: proc(error := Error.NotImplementedYet, message := "UH OH RAGGY!",
     case .PANIC_ON_ERROR:
         fmt.panicf("[odin-ini] PANIC %s@(%d:%d): %s (%s)", file, line, column, message, error)
    }
-}
+}*/
