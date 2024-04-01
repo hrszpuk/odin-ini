@@ -7,12 +7,11 @@ read_from_string :: proc(content: string, name := "config") -> ^Config {
     config := new_config(name)
     l := new_lexer(content)
     tokens := lex(l)
-    fmt.println(tokens)
-    //parse(tokens, config)
+    p := new_parser(tokens, config)
+    parse(p)
     return config
 }
 
-// TODO actually handle the error instead of returning true/false
 read_from_file :: proc(path: string) -> (config: ^Config = nil, ok := false) #optional_ok {
     data, success := os.read_entire_file_from_filename(path)
     if success {
