@@ -7,9 +7,9 @@
 </p>
 
 <p align="center">
-<a href="./LICENSE.md"><img src="https://img.shields.io/badge/license-GPL-blue.svg"></a>
-<a href="https://github.com/hrszpuk"><img src="https://img.shields.io/github/followers/hrszpuk?style=social"></a>
-<a href="https://github.com/hrszpuk/Mole/issues"><img src="https://img.shields.io/github/issues/hrszpuk/Mole"></a>
+<a href="./LICENSE.md"><img src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+<img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/hrszpuk/odin-ini">
+<a href="https://github.com/hrszpuk/odin-ini/issues"><img src="https://img.shields.io/github/issues/hrszpuk/odin-ini"></a>
 </p>
 
 <h3 align="center">
