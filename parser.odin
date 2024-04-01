@@ -1,5 +1,5 @@
 package ini
-
+/*
 Parser :: struct {
     pos: int,
     tokens: [dynamic]Token,
@@ -31,4 +31,5 @@ parse :: proc(tokens: [dynamic]Token, config: ^Config) {
 
 parse_section :: proc(tokens: ^[dynamic]Token, pos: ^int, config: ^Config) {
 
-}
+
+}*/
