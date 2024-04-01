@@ -1,0 +1,6 @@
+[book]
+authors = ["hrszpuk"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Odin Ini"
