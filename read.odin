@@ -3,7 +3,7 @@ package ini
 import "core:fmt"
 import "core:os"
 
-read_from_string :: proc(content: string, name := "config") -> ^Config {
+read_from_string :: proc(content: string, name := "config.ini") -> ^Config {
     config := new_config(name)
     l := new_lexer(content)
     tokens := lex(l)
