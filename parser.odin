@@ -2,11 +2,12 @@ package ini
 
 import "core:fmt"
 
+// TODO update for new config struct (no more Section)
 Parser :: struct {
     pos: int,
     tokens: [dynamic]Token,
     config: ^Config,
-    section: ^Section,
+    section: ^Config,
 }
 
 new_parser :: proc(tokens: [dynamic]Token, config: ^Config) -> ^Parser {
@@ -48,7 +49,7 @@ parse_key :: proc(p: ^Parser) {
     if p.section == nil {
         set(p.config, key, value)
     } else {
-        p.section.keys[key] = value
+        set(p.section, key, value)
     }
 }
 

@@ -3,28 +3,28 @@ package ini
 import "core:strings"
 
 write_to_string :: proc(c: ^Config) -> string {
-    s := strings.builder_make_none()
-    defer strings.builder_destroy(&s)
+    keys := strings.builder_make_none()
+    defer strings.builder_destroy(&keys)
+
+    sections := strings.builder_make_none()
+    defer strings.builder_destroy(&sections)
 
     for key, value in c.keys {
-        strings.write_string(&s, key)
-        strings.write_string(&s, "=")
-        strings.write_string(&s, value)
-        strings.write_string(&s, "\n")
-    }
+        if value.keys != nil {
+            strings.write_string(&sections, "\n[")
+            strings.write_string(&sections, value.name)
+            strings.write_string(&sections, "]\n")
+            strings.write_string(&sections, write_to_string(value))
 
-    for section in c.sections {
-        strings.write_string(&s, "\n[")
-        strings.write_string(&s, section.name)
-        strings.write_string(&s, "]\n")
-
-        for key, value in section.keys {
-            strings.write_string(&s, key)
-            strings.write_string(&s, "=")
-            strings.write_string(&s, value)
-            strings.write_string(&s, "\n")
+        } else {
+            strings.write_string(&keys, key)
+            strings.write_string(&keys, "=")
+            strings.write_string(&keys, value.name)
+            strings.write_string(&keys, "\n")
         }
     }
 
-    return strings.clone(strings.to_string(s))
+    strings.write_string(&keys, strings.to_string(sections))
+
+    return strings.clone(strings.to_string(keys))
 }
