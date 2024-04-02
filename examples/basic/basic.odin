@@ -4,7 +4,8 @@ import ini "../.."
 import "core:fmt"
 
 main :: proc() {
-    config := ini.read_from_file("../../tests/keys_and_sections.ini")
+    config := ini.read_from_file("../../tests/sections.ini")
+    defer ini.destroy_config(config)
 
     ini.set(config, "wife", "Monica")
 
@@ -12,5 +13,8 @@ main :: proc() {
     ini.set(children, "daughter", "Jessica")
     ini.set(children, "son", "Billy")
 
-    fmt.println(ini.write_to_string(config))
+
+    s := ini.write_to_string(config)
+    defer delete(s)
+    fmt.println(s)
 }
