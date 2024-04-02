@@ -1,5 +1,5 @@
 package ini
-/*
+
 import "core:os"
 import "core:fmt"
 
@@ -26,7 +26,7 @@ ThrownError :: struct {
 // Depending on the error mode, this will either throw an error, print a warning, do nothing, or stop the program.
 // This is purely for INI and should not be used for general error handling.
 throw_error :: proc(error := Error.NotImplementedYet, message := "UH OH RAGGY!", line: int, column: int, file: string) -> Maybe(ThrownError) {
-    switch GlobalOptions.ErrorHandling.Mode {
+    switch Options.ErrorHandling.Mode {
     case .IGNORE: return nil
     case .WARN_ON_ERROR:
         fmt.println("[odin-ini] WARNING %s@(%d:%d): %s (%s)", file, line, column, message, error)
@@ -38,4 +38,5 @@ throw_error :: proc(error := Error.NotImplementedYet, message := "UH OH RAGGY!",
     case .PANIC_ON_ERROR:
         fmt.panicf("[odin-ini] PANIC %s@(%d:%d): %s (%s)", file, line, column, message, error)
    }
-}*/
+    return nil
+}
