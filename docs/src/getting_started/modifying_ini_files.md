@@ -1,4 +1,4 @@
-# Modifying INI Files
+# Modifying INI files
 You've already seen some of the modification procedures in the previous examples. Here are some more examples of how you can modify an INI file:
 ```odin
 package main

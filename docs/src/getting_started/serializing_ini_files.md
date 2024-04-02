@@ -1,4 +1,4 @@
-# Serializing INI Files
+# Serializing INI files
 To serialize an INI file, the library first serializes the config into a string. Then it writes the string to a file.
 You may do this yourself using the following functions:
 - `write_to_string`

@@ -1,4 +1,4 @@
-# Parsing INI Files
+# Parsing INI files
 To parse an INI file, the library first reads the file and produces lexical tokens. Then it parses the tokens into a pointer to a [Config](../api_reference/config.md) struct.
 You may do this yourself using the following functions: `new_lexer`, `lex`, `new_parser`, and `parse`.
 

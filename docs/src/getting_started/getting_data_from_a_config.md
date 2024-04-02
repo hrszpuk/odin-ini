@@ -1,4 +1,4 @@
-# Getting Data from a Config
+# Extracting data
 You can read data from a config using the `get` procedures:
 - `get`: alias for `get_key`
 - `get_key`: get a key-value pair in the config (or section)

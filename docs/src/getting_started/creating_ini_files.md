@@ -1,4 +1,4 @@
-# Creating INI Files
+# Creating INI files
 Reading a pre-existing ini config is not the only way to use the library. You can also create a new config from scratch using the `new_config` function.
 
 `new_config` will accept a string argument which will be the name of the config file.
