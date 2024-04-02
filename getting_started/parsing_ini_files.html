@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Parsing INI Files - Odin Ini</title>
+        <title>Parsing INI files - Odin Ini</title>
                 
 
         <!-- Custom HTML head -->
@@ -82,7 +82,7 @@
 
         <nav id="sidebar" class="sidebar" aria-label="Table of contents">
             <div class="sidebar-scrollbox">
-                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../installation.html"><strong aria-hidden="true">1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="../getting_started/index.html"><strong aria-hidden="true">2.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../getting_started/parsing_ini_files.html" class="active"><strong aria-hidden="true">2.1.</strong> Parsing INI Files</a></li><li class="chapter-item expanded "><a href="../getting_started/creating_ini_files.html"><strong aria-hidden="true">2.2.</strong> Creating INI Files</a></li><li class="chapter-item expanded "><a href="../getting_started/serializing_ini_files.html"><strong aria-hidden="true">2.3.</strong> Serializing INI Files</a></li></ol></li><li class="chapter-item expanded "><a href="../advanced_usage/index.html"><strong aria-hidden="true">3.</strong> Advanced Usage</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../advanced_usage/configuration_options.html"><strong aria-hidden="true">3.1.</strong> Configuration Options</a></li><li class="chapter-item expanded "><a href="../advanced_usage/error_handling.html"><strong aria-hidden="true">3.2.</strong> Error Handling</a></li><li class="chapter-item expanded "><a href="../advanced_usage/conversion_to_json.html"><strong aria-hidden="true">3.3.</strong> Conversion to/from JSON</a></li><li class="chapter-item expanded "><a href="../advanced_usage/custom_conversions.html"><strong aria-hidden="true">3.4.</strong> Custom Conversions</a></li></ol></li><li class="chapter-item expanded "><a href="../api_reference/index.html"><strong aria-hidden="true">4.</strong> API Reference</a></li><li class="chapter-item expanded "><a href="../examples/index.html"><strong aria-hidden="true">5.</strong> Examples</a></li></ol>            </div>
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../introduction.html">Introduction</a></li><li class="chapter-item expanded "><a href="../installation.html"><strong aria-hidden="true">1.</strong> Installation</a></li><li class="chapter-item expanded "><a href="../getting_started/index.html"><strong aria-hidden="true">2.</strong> Getting Started</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../getting_started/parsing_ini_files.html" class="active"><strong aria-hidden="true">2.1.</strong> Parsing INI files</a></li><li class="chapter-item expanded "><a href="../getting_started/creating_ini_files.html"><strong aria-hidden="true">2.2.</strong> Creating INI files</a></li><li class="chapter-item expanded "><a href="../getting_started/modifying_ini_files.html"><strong aria-hidden="true">2.3.</strong> Modifying INI files</a></li><li class="chapter-item expanded "><a href="../getting_started/getting_data_from_a_config.html"><strong aria-hidden="true">2.4.</strong> Extracting data</a></li><li class="chapter-item expanded "><a href="../getting_started/serializing_ini_files.html"><strong aria-hidden="true">2.5.</strong> Serializing INI files</a></li></ol></li><li class="chapter-item expanded "><a href="../advanced_usage/index.html"><strong aria-hidden="true">3.</strong> Advanced Usage</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../advanced_usage/configuration_options.html"><strong aria-hidden="true">3.1.</strong> Configuration Options</a></li><li class="chapter-item expanded "><a href="../advanced_usage/error_handling.html"><strong aria-hidden="true">3.2.</strong> Error Handling</a></li><li class="chapter-item expanded "><a href="../advanced_usage/conversion_to_json.html"><strong aria-hidden="true">3.3.</strong> Conversion to/from JSON</a></li><li class="chapter-item expanded "><a href="../advanced_usage/custom_conversions.html"><strong aria-hidden="true">3.4.</strong> Custom Conversions</a></li></ol></li><li class="chapter-item expanded "><a href="../api_reference/index.html"><strong aria-hidden="true">4.</strong> API Reference</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../api_reference/config.html"><strong aria-hidden="true">4.1.</strong> Config</a></li><li class="chapter-item expanded "><a href="../api_reference/options.html"><strong aria-hidden="true">4.2.</strong> Options</a></li><li class="chapter-item expanded "><a href="../api_reference/error.html"><strong aria-hidden="true">4.3.</strong> Error</a></li><li class="chapter-item expanded "><a href="../api_reference/conversion.html"><strong aria-hidden="true">4.4.</strong> Conversion</a></li></ol></li><li class="chapter-item expanded "><a href="../examples/index.html"><strong aria-hidden="true">5.</strong> Examples</a></li></ol>            </div>
             <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
         </nav>
 
@@ -143,7 +143,47 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="parsing-ini-files"><a class="header" href="#parsing-ini-files">Parsing INI Files</a></h1>
+                        <h1 id="parsing-ini-files"><a class="header" href="#parsing-ini-files">Parsing INI files</a></h1>
+<p>To parse an INI file, the library first reads the file and produces lexical tokens. Then it parses the tokens into a pointer to a <a href="../api_reference/config.html">Config</a> struct.
+You may do this yourself using the following functions: <code>new_lexer</code>, <code>lex</code>, <code>new_parser</code>, and <code>parse</code>.</p>
+<p>However, the library provides a number of helper functions that make this process easier:</p>
+<ul>
+<li><code>read_from_string</code> :</li>
+<li><code>read_from_file</code></li>
+<li><code>read_from_reader</code></li>
+<li><code>read_from_bytes</code></li>
+</ul>
+<pre><code class="language-odin">package main
+
+import &quot;core:fmt&quot;
+import &quot;path/to/odin-ini/&quot; 
+
+main :: proc() {
+    config := ini.read_from_file(&quot;config.ini&quot;) // Empty ini config
+    defer ini.destroy_config(config) // Don't forget to free the memory!
+    
+    // Modifying the config
+    ini.set(config, &quot;count&quot;, &quot;42&quot;)
+    ini.set(config, &quot;name&quot;, &quot;John Doe&quot;)
+    
+    // Adding a section to the config
+    animals := ini.add_section(config, &quot;animals&quot;)
+    ini.set(animals, &quot;dog&quot;, &quot;Rex&quot;)
+    ini.set(animals, &quot;cat&quot;, &quot;Whiskers&quot;)
+    
+    // Printing the config out
+    out := ini.write_to_string(config)
+    fmt.println(out)
+}
+</code></pre>
+<p>output:</p>
+<pre><code>count=42
+name=John Doe
+
+[animals]
+dog=Rex
+cat=Whiskers
+</code></pre>
 
                     </main>
 
