@@ -1,8 +1,8 @@
 package ini
-/*
+
 import "core:bufio"
 
-Options :: struct {
+IniOptions :: struct {
     Syntax: struct {
         CaseSensitiveKeys: bool,        // Whether keys are case-sensitive or not (default: false)
         CaseSensitiveSections: bool,    // Whether sections are case-sensitive or not (default: false)
@@ -17,9 +17,6 @@ Options :: struct {
         IgnoreDelimiterPadding: bool,   // Whether delimiter padding is ignored or not (default: true)
         IgnoreSectionNamePadding: bool, // Whether section name padding is ignored or not (default: true)
 
-        CommentSymbols: [dynamic]rune,  // Comment symbols (default: ['#', ';'])
-        SectionSymbols: [dynamic]rune,  // Section symbols (default: ['[', ']'])
-        DelimiterSymbols: [dynamic]rune,// Delimiter symbols (default: ['=', ':'])
         NestedSectionSymbol: rune,      // Nested section symbol (default: '.')
     },
 
@@ -48,7 +45,7 @@ Options :: struct {
 
 // Default, global options for the library.
 // These options can be changed at runtime.
-GlobalOptions : Options = {
+Options : IniOptions = {
     { // Syntax
         CaseSensitiveKeys = false,
         CaseSensitiveSections = false,
@@ -62,10 +59,6 @@ GlobalOptions : Options = {
         IgnoreDuplicateSections = false,
         IgnoreDelimiterPadding = true,
         IgnoreSectionNamePadding = true,
-
-        CommentSymbols = [dynamic]rune{'#', ';'},
-        SectionSymbols = [dynamic]rune{'[', ']'},
-        DelimiterSymbols = [dynamic]rune{'=', ':'},
 
         NestedSectionSymbol = '.',
     },
@@ -89,4 +82,3 @@ GlobalOptions : Options = {
 
     false, // Debug
 }
-*/
