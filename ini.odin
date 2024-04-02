@@ -1,8 +1,11 @@
 package ini
 
+import "core:fmt"
+
 Config :: struct {
     name: string,
     keys: map[string]^Config,
+    safe: bool,
 }
 
 new_config :: proc(name: string) -> ^Config {
@@ -14,7 +17,18 @@ new_config :: proc(name: string) -> ^Config {
 }
 
 destroy_config :: proc(c: ^Config) {
-    // TODO
+    for k, v in c.keys {
+        delete(k)
+        if v.keys == nil {
+            delete(v.name)
+            free(v)
+            continue
+        } else {
+            destroy_config(v)
+        }
+    }
+    delete(c.keys)
+    free(c)
 }
 
 add_section :: proc(c: ^Config, name: string) -> ^Config {

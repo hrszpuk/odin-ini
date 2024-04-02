@@ -1,5 +1,6 @@
 package ini
 
+import "core:strings"
 import "core:fmt"
 
 // TODO update for new config struct (no more Section)
@@ -36,14 +37,14 @@ parse :: proc(p: ^Parser) {
 }
 
 parse_key :: proc(p: ^Parser) {
-    key := p.tokens[p.pos].value
+    key := strings.clone(p.tokens[p.pos].value)
     p.pos += 1
     if p.tokens[p.pos].type != .DELIMITER {
         fmt.println("Expected delimiter after key")
         return
     }
     p.pos += 1
-    value := p.tokens[p.pos].value
+    value := strings.clone(p.tokens[p.pos].value)
     p.pos += 1
 
     if p.section == nil {
@@ -55,7 +56,7 @@ parse_key :: proc(p: ^Parser) {
 
 parse_section :: proc(p: ^Parser) {
     p.pos += 1
-    section_name := p.tokens[p.pos].value
+    section_name := strings.clone(p.tokens[p.pos].value)
     p.pos += 1
     if p.tokens[p.pos].type != .RSB {
         fmt.println("Expected closing bracket")

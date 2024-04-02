@@ -14,8 +14,9 @@ write_to_string :: proc(c: ^Config) -> string {
             strings.write_string(&sections, "\n[")
             strings.write_string(&sections, value.name)
             strings.write_string(&sections, "]\n")
-            strings.write_string(&sections, write_to_string(value))
-
+            section := write_to_string(value)
+            strings.write_string(&sections, section)
+            delete(section)
         } else {
             strings.write_string(&keys, key)
             strings.write_string(&keys, "=")
