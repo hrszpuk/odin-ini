@@ -55,6 +55,20 @@ lexId :: proc(l: ^Lexer) -> Token {
     return Token{.ID, utf8.runes_to_string(l.input[start:l.pos]), l.line, l.col}
 }
 
+lexComment :: proc(l: ^Lexer) -> Token {
+    start := l.pos - 1
+
+    for l.pos < len(l.input) {
+        c := next(l)
+        if c == 0 || c == '\n' {
+            back(l)
+            break
+        }
+    }
+
+    return Token{.ID, utf8.runes_to_string(l.input[start:l.pos]), l.line, l.col}
+}
+
 back :: proc(l: ^Lexer) {
     l.pos -= 1
     if l.input[l.pos] == '\n' {
