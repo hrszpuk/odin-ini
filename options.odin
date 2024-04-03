@@ -4,14 +4,12 @@ import "core:bufio"
 
 IniOptions :: struct {
     Syntax: struct {
-        CaseSensitiveKeys: bool,        // Whether keys are case-sensitive or not (default: false)
-        CaseSensitiveSections: bool,    // Whether sections are case-sensitive or not (default: false)
         AllowEmptyValues: bool,         // Whether empty values are allowed or not (default: true)
         AllowEmptySections: bool,       // Whether empty sections are allowed or not (default: true)
-        AllowEmptyFiles: bool,          // Whether empty files are allowed or not (default: true)
         AllowQuotedValues: bool,        // Whether quoted values are allowed or not (default: true)
         AllowNestedSections: bool,      // Whether nested sections are allowed or not (default: true)
 
+        IgnoreCaseSensitivity: bool,    // Whether case sensitivity is ignored or not (default: false)
         IgnoreDuplicateKeys: bool,      // Whether duplicate keys are ignored or not (default: false)
         IgnoreDuplicateSections: bool,  // Whether duplicate sections are ignored or not (default: false)
         IgnoreDelimiterPadding: bool,   // Whether delimiter padding is ignored or not (default: true)
@@ -47,14 +45,12 @@ IniOptions :: struct {
 // These options can be changed at runtime.
 Options : IniOptions = {
     { // Syntax
-        CaseSensitiveKeys = false,
-        CaseSensitiveSections = false,
         AllowEmptyValues = true,
         AllowEmptySections = true,
-        AllowEmptyFiles = true,
         AllowQuotedValues = true,
         AllowNestedSections = true,
 
+        IgnoreCaseSensitivity = false,
         IgnoreDuplicateKeys = false,
         IgnoreDuplicateSections = false,
         IgnoreDelimiterPadding = true,
