@@ -27,6 +27,7 @@ parse :: proc(p: ^Parser) {
         #partial switch t.type {
         case .LSB: parse_section(p)
         case .ID: parse_key(p)
+        case .COMMENT: p.pos += 1 // TODO Add comments to config?
         case .EOL: p.pos += 1
         case .EOF: return
         case:
