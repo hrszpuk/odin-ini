@@ -29,3 +29,15 @@ write_to_string :: proc(c: ^Config) -> string {
 
     return strings.clone(strings.to_string(keys))
 }
+
+write_to_file :: proc(c: ^Config, filename := "config.ini") {
+
+}
+
+write_to_handle :: proc(c: ^Config, h: os.Handle) {
+
+}
+
+write_to_json :: proc(c: ^Config) -> string {
+
+}
