@@ -7,7 +7,7 @@ TokenType :: enum {
     QM,             // "
     LSB,            // [
     RSB,            // ]
-    BSL,            // \
+    COMMENT,        // # or ;
     DELIMITER,      // = or :
     EOL,            // \n
     EOF             // End of file

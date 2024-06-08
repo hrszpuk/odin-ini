@@ -30,7 +30,6 @@ lex :: proc(l: ^Lexer) -> [dynamic]Token {
         case ']': append(&l.tokens, Token{.RSB, "]", l.line, l.col})
         case '[': append(&l.tokens, Token{.LSB, "[", l.line, l.col})
         case '=', ':': append(&l.tokens, Token{.DELIMITER, "=", l.line, l.col})
-        case '\\': append(&l.tokens, Token{.ESCAPE, "\\", l.line, l.col})
         case ' ', '\t', '\r': break
         case: append(&l.tokens, lexId(l))
         }
