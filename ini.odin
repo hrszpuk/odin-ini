@@ -5,7 +5,6 @@ import "core:fmt"
 Config :: struct {
     name: string,
     keys: map[string]^Config,
-    safe: bool,
 }
 
 new_config :: proc(name: string) -> ^Config {
