@@ -405,6 +405,13 @@ ini.destroy_config(config) // free config memory
 config := ini.read_from_handle(file)
 ini.destroy_config(config) // free config memory
 </code></pre>
+<h2 id="read_from_jsons-string---config"><a class="header" href="#read_from_jsons-string---config">read_from_json(s: string) -&gt; ^Config</a></h2>
+<p>Reads content from a JSON string and parses it into the <code>Config</code> struct.</p>
+<pre><code class="language-odin">config := ini.read_from_json(&quot;{\&quot;name\&quot;:\&quot;Jerry\&quot;,\&quot;keys\&quot;:{\&quot;section\&quot;:{\&quot;name\&quot;:\&quot;section\&quot;,\&quot;keys\&quot;:{\&quot;key\&quot;:\&quot;value\&quot;}}}}&quot;)
+fmt.println(config) // prints &amp;Config{name = &quot;config.ini&quot;, keys = map[name = &quot;Jerry&quot;, section=0x1D29928]}
+
+ini.destroy_config(config) // free config memory
+</code></pre>
 <h2 id="write_to_stringc-config---string"><a class="header" href="#write_to_stringc-config---string">write_to_string(c: ^Config) -&gt; string</a></h2>
 <p>Writes the <code>Config</code> struct to a string.</p>
 <pre><code class="language-odin">config := ini.read_from_string(&quot;[section]\nkey=value&quot;)
@@ -435,38 +442,131 @@ s := ini.write_to_json(config)
 delete(s) // free memory
 ini.destroy_config(config) // free config memory
 </code></pre>
-<h2 id="getc-config-key-string---string"><a class="header" href="#getc-config-key-string---string">get(c: ^Config, key: string) -&gt; string</a></h2>
+<h2 id="getget_key"><a class="header" href="#getget_key">get{get_key}</a></h2>
+<p>Alias for <code>get_key</code>.</p>
+<h2 id="get_keyc-config-key-string---string"><a class="header" href="#get_keyc-config-key-string---string">get_key(c: ^Config, key: string) -&gt; string</a></h2>
 <p>Gets the value of a key from the <code>Config</code> struct.
 This can also be used to get the key of a section because internally they are <code>^Config</code>.</p>
 <pre><code class="language-odin">config := ini.read_from_string(&quot;n=10\n[section]\nkey=value&quot;)
-value := ini.get(config, &quot;n&quot;)
+value := ini.get_key(config, &quot;n&quot;)
+fmt.println(value) // prints 10
 
 ini.destroy_config(config) // free config memory
 </code></pre>
-<h2 id="get_key"><a class="header" href="#get_key">get_key</a></h2>
-<h2 id="get_section"><a class="header" href="#get_section">get_section</a></h2>
-<h2 id="add_section"><a class="header" href="#add_section">add_section</a></h2>
-<h2 id="set"><a class="header" href="#set">set</a></h2>
-<h2 id="set_key"><a class="header" href="#set_key">set_key</a></h2>
-<h2 id="set_section"><a class="header" href="#set_section">set_section</a></h2>
-<h2 id="remove"><a class="header" href="#remove">remove</a></h2>
-<h2 id="remove_key"><a class="header" href="#remove_key">remove_key</a></h2>
-<h2 id="remove_section"><a class="header" href="#remove_section">remove_section</a></h2>
-<h2 id="has_key"><a class="header" href="#has_key">has_key</a></h2>
-<h2 id="has_section"><a class="header" href="#has_section">has_section</a></h2>
-<h2 id="is_empty"><a class="header" href="#is_empty">is_empty</a></h2>
-<h2 id="clear"><a class="header" href="#clear">clear</a></h2>
-<h2 id="remove_all"><a class="header" href="#remove_all">remove_all</a></h2>
-<h2 id="size"><a class="header" href="#size">size</a></h2>
-<h2 id="depth"><a class="header" href="#depth">depth</a></h2>
-<h2 id="keys"><a class="header" href="#keys">keys</a></h2>
-<h2 id="values"><a class="header" href="#values">values</a></h2>
-<h2 id="sections"><a class="header" href="#sections">sections</a></h2>
-<h2 id="all_keys"><a class="header" href="#all_keys">all_keys</a></h2>
-<h2 id="all_values"><a class="header" href="#all_values">all_values</a></h2>
-<h2 id="all_sections"><a class="header" href="#all_sections">all_sections</a></h2>
-<h2 id="flatten"><a class="header" href="#flatten">flatten</a></h2>
-<h2 id="merge"><a class="header" href="#merge">merge</a></h2>
+<h2 id="get_sectionc-config-section-string---config"><a class="header" href="#get_sectionc-config-section-string---config">get_section(c: ^Config, section: string) -&gt; ^Config</a></h2>
+<p>Gets the value of a section from a <code>Config</code> struct.</p>
+<pre><code class="language-odin">config := ini.read_from_string(&quot;n=10\n[section]\nkey=value&quot;)
+value := ini.get_section(config, &quot;section&quot;)
+fmt.println(value) // prints &amp;Config{name = &quot;config.ini&quot;, keys = map[n=0x1D27A78, section=section1=0x1D29928]}
+
+ini.destroy_config(config) // free config memory
+</code></pre>
+<h2 id="add_sectionc-config-section-string---config"><a class="header" href="#add_sectionc-config-section-string---config">add_section(c: ^Config, section: string) -&gt; ^Config</a></h2>
+<p>Adds a section to a <code>Config</code> and returns a pointer to the new section.
+You can use the pointer to add new keys, or sections, to the section.</p>
+<pre><code class="language-odin">config := ini.new_config()
+section := ini.add_section(config, &quot;section&quot;)
+
+ini.destroy_config(config) // free config memory
+</code></pre>
+<h2 id="setset_key-set_section"><a class="header" href="#setset_key-set_section">set{set_key, set_section}</a></h2>
+<p>Alias for <code>set_key</code> and <code>set_section</code>.</p>
+<h2 id="set_keyc-config-key-string-value-string"><a class="header" href="#set_keyc-config-key-string-value-string">set_key(c: ^Config, key: string, value: string)</a></h2>
+<p>Sets the value of a key in the <code>Config</code> struct.
+<code>key=value</code> is the same as <code>set(config, &quot;key&quot;, &quot;value&quot;)</code>.</p>
+<pre><code class="language-odin">config := ini.new_config()
+ini.set_key(config, &quot;key&quot;, &quot;value&quot;)
+
+ini.destroy_config(config)
+</code></pre>
+<h2 id="set_sectionc-config-key-string-section-config"><a class="header" href="#set_sectionc-config-key-string-section-config">set_section(c: ^Config, key: string, section: ^Config)</a></h2>
+<p>Sets the value of a key in the <code>Config</code> struct to a section.
+<code>[section]</code> is the same as <code>set(config, &quot;section&quot;, section)</code>.</p>
+<pre><code class="language-odin">config := ini.new_config()
+set_section(config, &quot;section&quot;, ini.new_config()) // Adds an empty section called &quot;section&quot;
+
+ini.destroy_config(config)
+</code></pre>
+<h2 id="removec-config-key-string"><a class="header" href="#removec-config-key-string">remove(c: ^Config, key: string)</a></h2>
+<p>Removes a key from a <code>Config</code>. This will affect both key values and sections.</p>
+<pre><code class="language-odin">config := ini.read_from_string(&quot;n=10\n[section]\nkey=value&quot;)
+ini.remove(config, &quot;n&quot;) // Removes the key &quot;n&quot; from the config file.
+ini.remove(config, &quot;section&quot;) // Removes the section &quot;section&quot; from the config file (this also removes the key).
+
+ini.destroy_config(config) // free config memory
+</code></pre>
+<h2 id="pop_keyc-config-key-string---string"><a class="header" href="#pop_keyc-config-key-string---string">pop_key(c: ^Config, key: string) -&gt; string</a></h2>
+<p>Removes the key from the <code>Config</code> and returns the value of the key.</p>
+<pre><code class="language-odin">config := ini.read_from_string(&quot;n=10\n[section]\nkey=value&quot;)
+value := ini.pop_key(config, &quot;n&quot;) // Returns &quot;10&quot;
+
+ini.destroy_config(config) // free config memory
+</code></pre>
+<h2 id="pop_sectionc-config-section-string---config"><a class="header" href="#pop_sectionc-config-section-string---config">pop_section(c: ^Config, section: string) -&gt; ^Config</a></h2>
+<p>Removes the key from the <code>Config</code> and returns the section as a <code>^Config</code>.
+This is used to remove a section from a <code>Config</code>.</p>
+<p>If this is applied to a normal key it will return a <code>Config</code> with the <code>name</code> field as the value but with no keys.</p>
+<pre><code class="language-odin">config := ini.read_from_string(&quot;n=10\n[section]\nkey=value&quot;)
+value := ini.pop_section(config, &quot;section&quot;) // Returns &amp;Config{name = &quot;section&quot;, keys = map[key=value]}
+
+ini.destroy_config(config) // free config memory
+</code></pre>
+<h2 id="has_keyc-config-key-string---bool"><a class="header" href="#has_keyc-config-key-string---bool">has_key(c: ^Config, key: string) -&gt; bool</a></h2>
+<p>Checks if a config has a key with the given name.
+This will return false if the key is a section.</p>
+<pre><code class="language-odin">config := ini.read_from_string(&quot;n=10\n[section]\nkey=value&quot;)
+ini.has_key(config, &quot;n&quot;) // Returns true
+ini.has_key(config, &quot;section&quot;) // Returns false
+ini.has_key(config, &quot;benis&quot;) // Returns false
+
+ini.destroy_config(config) // free config memory
+</code></pre>
+<h2 id="has_sectionc-config-section-string---bool"><a class="header" href="#has_sectionc-config-section-string---bool">has_section(c: ^Config, section: string) -&gt; bool</a></h2>
+<p>Checks if a config has a section with the given name.</p>
+<pre><code class="language-odin">config := ini.read_from_string(&quot;n=10\n[section]\nkey=value&quot;)
+ini.has_section(config, &quot;section&quot;) // Returns true
+ini.has_section(config, &quot;n&quot;) // Returns false
+ini.has_section(config, &quot;benis&quot;) // Returns false
+
+ini.destroy_config(config) // free config memory
+</code></pre>
+<h2 id="is_emptyc-config---bool"><a class="header" href="#is_emptyc-config---bool">is_empty(c: ^Config) -&gt; bool</a></h2>
+<p>Returns <code>true</code> if the config is empty, <code>false</code> otherwise.</p>
+<pre><code class="language-odin">config := ini.new_config()
+ini.is_empty(config) // Returns true
+ini.set_key(config, &quot;key&quot;, &quot;value&quot;)
+ini.is_empty(config) // Returns false
+
+ini.destroy_config(config) // free config memory
+</code></pre>
+<h2 id="clearc-config"><a class="header" href="#clearc-config">clear(c: ^Config)</a></h2>
+<p>Removes all keys and sections from the <code>Config</code>.</p>
+<pre><code class="language-odin">config := ini.read_from_string(&quot;n=10\n[section]\nkey=value
+ini.clear(config) // Removes all keys and sections from the config file.
+
+ini.destroy_config(config) // free config memory
+</code></pre>
+<h2 id="keysc-config---string"><a class="header" href="#keysc-config---string">keys(c: ^Config) -&gt; []string</a></h2>
+<p>Returns an array of all the keys in the <code>Config</code>.</p>
+<pre><code class="language-odin">config := ini.read_from_string(&quot;n=10\n[section]\nkey=value&quot;)
+keys := ini.keys(config) // Returns [&quot;n&quot;]
+
+ini.destroy_config(config) // free config memory
+</code></pre>
+<h2 id="valuesc-config---string"><a class="header" href="#valuesc-config---string">values(c: ^Config) -&gt; []string</a></h2>
+<p>Returns an array of all the values in the <code>Config</code>.</p>
+<pre><code class="language-odin">config := ini.read_from_string(&quot;n=10\n[section]\nkey=value&quot;)
+values := ini.values(config) // Returns [&quot;10&quot;, &quot;value&quot;]
+
+ini.destroy_config(config) // free config memory
+</code></pre>
+<h2 id="sectionsc-config---string"><a class="header" href="#sectionsc-config---string">sections(c: ^Config) -&gt; []string</a></h2>
+<p>Returns an array of all the sections in the <code>Config</code>.</p>
+<pre><code class="language-odin">config := ini.read_from_string(&quot;n=10\n[section]\nkey=value&quot;)
+sections := ini.sections(config) // Returns [&quot;section&quot;]
+
+ini.destroy_config(config) // free config memory
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="options"><a class="header" href="#options">Options</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="error"><a class="header" href="#error">Error</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="conversion"><a class="header" href="#conversion">Conversion</a></h1>
