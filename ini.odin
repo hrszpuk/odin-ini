@@ -1,6 +1,7 @@
 package ini
 
 import "core:fmt"
+import "core:strings"
 
 // Ini Config Type
 // .value is the value of an entry stored in the config (or section of the config), or the name of the config.
@@ -13,7 +14,7 @@ Config :: struct {
 // Creates a new ini config and returns a pointer to it.
 new_config :: proc(name: string) -> ^Config {
     p := new(Config)
-    p.value = name
+    p.value = strings.clone(name)
     p.keys = make(map[string]^Config)
 
     return p
@@ -26,12 +27,12 @@ destroy_config :: proc(c: ^Config) {
         if v.keys == nil {
             delete(v.value)
             free(v)
-            continue
         } else {
             destroy_config(v)
         }
     }
     delete(c.keys)
+    delete(c.value)
     free(c)
 }
 
@@ -49,8 +50,9 @@ set :: proc{set_key, set_section}
 
 // Sets the value of a given key.
 set_key :: proc(c: ^Config, key: string, value: string) {
-    c.keys[key] = new(Config)
-    c.keys[key].value = value
+    key_heap := strings.clone(key)
+    c.keys[key_heap] = new(Config)
+    c.keys[key_heap].value = strings.clone(value)
 }
 
 // Sets the value of a given key (specifically for sections).
@@ -58,7 +60,8 @@ set_section :: proc(c: ^Config, key: string, value: ^Config) -> bool {
     if value == nil {
         return false
     }
-    c.keys[key] = value
+    key_heap := strings.clone(key)
+    c.keys[key_heap] = value
     return true
 }
 
