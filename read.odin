@@ -37,9 +37,9 @@ read_from_file :: proc(path: string) -> (config: ^Config = nil, ok := false) #op
 }
 
 read_from_handle :: proc(path: string) -> (config: ^Config = nil, ok := false) #optional_ok {
-
+    return nil, false
 }
 
 read_from_json :: proc(json_str: string) -> (config: ^Config = nil, ok := false) #optional_ok {
-
+    return nil, true
 }

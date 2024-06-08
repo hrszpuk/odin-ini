@@ -1,5 +1,6 @@
 package ini
 
+import "core:os"
 import "core:strings"
 
 write_to_string :: proc(c: ^Config) -> string {
@@ -39,5 +40,5 @@ write_to_handle :: proc(c: ^Config, h: os.Handle) {
 }
 
 write_to_json :: proc(c: ^Config) -> string {
-
+    return ""
 }
