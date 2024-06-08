@@ -79,3 +79,12 @@ get_section :: proc(c: ^Config, name: string) -> ^Config {
     return c.keys[name]
 }
 
+// Checks if a key exists in a given config
+has_key :: proc(c: ^Config, name: string) -> bool {
+    return c.keys != nil && name in c.keys
+}
+
+// Checks if a key exists in a given config and if it is a section.
+is_section :: proc(c: ^Config, name: string) -> bool {
+    return has_key(c, name) && c.keys[name].keys == nil
+}
