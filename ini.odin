@@ -23,8 +23,8 @@ new_config :: proc(name: string) -> ^Config {
 // Deletes all keys and values in the config, and the config itself.
 destroy_config :: proc(c: ^Config) {
     for k, v in c.keys {
-        delete(k)
         if v.keys == nil {
+            delete(k)
             delete(v.value)
             free(v)
         } else {
@@ -39,7 +39,7 @@ destroy_config :: proc(c: ^Config) {
 // Adds a new section to the given config and returns a pointer to it.
 add_section :: proc(c: ^Config, name: string) -> ^Config {
     s := new(Config)
-    s.value = name
+    s.value = strings.clone(name)
     s.keys = make(map[string]^Config)
     c.keys[name] = s
     return s
