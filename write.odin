@@ -13,7 +13,7 @@ write_to_string :: proc(c: ^Config) -> string {
     for key, value in c.keys {
         if value.keys != nil {
             strings.write_string(&sections, "\n[")
-            strings.write_string(&sections, value.name)
+            strings.write_string(&sections, value.value)
             strings.write_string(&sections, "]\n")
             section := write_to_string(value)
             strings.write_string(&sections, section)
@@ -21,7 +21,7 @@ write_to_string :: proc(c: ^Config) -> string {
         } else {
             strings.write_string(&keys, key)
             strings.write_string(&keys, "=")
-            strings.write_string(&keys, value.name)
+            strings.write_string(&keys, value.value)
             strings.write_string(&keys, "\n")
         }
     }

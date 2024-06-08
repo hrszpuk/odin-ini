@@ -24,7 +24,7 @@ destroy_config :: proc(c: ^Config) {
     for k, v in c.keys {
         delete(k)
         if v.keys == nil {
-            delete(v.name)
+            delete(v.value)
             free(v)
             continue
         } else {
