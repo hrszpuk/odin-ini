@@ -3,6 +3,7 @@ package ini
 import "core:os"
 import "core:strings"
 
+// Converts an ini config to a string (key=value, [section], etc)
 write_to_string :: proc(c: ^Config) -> string {
     keys := strings.builder_make_none()
     defer strings.builder_destroy(&keys)
