@@ -26,9 +26,10 @@ lex :: proc(l: ^Lexer) -> [dynamic]Token {
     for l.pos < len(l.input) {
         switch c = next(l); c {
         case '\n': append(&l.tokens, Token{.EOL, "\n", l.line, l.col})
+        case ';', '#': append(&l.tokens, Token{.COMMENT, lexId(l).value, l.line, l.col})
         case ']': append(&l.tokens, Token{.RSB, "]", l.line, l.col})
         case '[': append(&l.tokens, Token{.LSB, "[", l.line, l.col})
-        case '=': append(&l.tokens, Token{.DELIMITER, "=", l.line, l.col})
+        case '=', ':': append(&l.tokens, Token{.DELIMITER, "=", l.line, l.col})
         case ' ', '\t', '\r': break
         case: append(&l.tokens, lexId(l))
         }
@@ -45,6 +46,20 @@ lexId :: proc(l: ^Lexer) -> Token {
     for l.pos < len(l.input) {
         c := next(l)
         if c == 0 || c == '\n' || c == '[' || c == ']' || c == '=' {
+            back(l)
+            break
+        }
+    }
+
+    return Token{.ID, utf8.runes_to_string(l.input[start:l.pos]), l.line, l.col}
+}
+
+lexComment :: proc(l: ^Lexer) -> Token {
+    start := l.pos - 1
+
+    for l.pos < len(l.input) {
+        c := next(l)
+        if c == 0 || c == '\n' {
             back(l)
             break
         }
