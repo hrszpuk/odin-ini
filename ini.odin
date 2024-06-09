@@ -104,3 +104,20 @@ remove :: proc(c: ^Config, name: string) -> bool {
     delete_key(&c.keys, name)
     return true
 }
+
+// Removes a key from a config/section and returns the value
+pop_key :: proc(c: ^Config, name: string) -> (string, bool) #optional_ok {
+    if !has_key(c, name) do return "", false
+    value := c.keys[name]
+    defer free(value)
+    delete_key(&c.keys, name)
+    return value.value, true
+}
+
+// Removes a key from a config/section
+pop_section :: proc(c: ^Config, name: string) -> (^Config, bool) #optional_ok  {
+    if !has_key(c, name) do return nil, false
+    value := c.keys[name]
+    delete_key(&c.keys, name)
+    return value, true
+}
