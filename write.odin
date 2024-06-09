@@ -42,7 +42,7 @@ write_to_string :: proc(c: ^Config, prefix := false) -> string {
     return strings.clone(strings.to_string(keys))
 }
 
-write_to_file :: proc(c: ^Config, filename := "config.ini") {
+write_to_file :: proc(c: ^Config, filename: string) {
 
 }
 
@@ -50,6 +50,39 @@ write_to_handle :: proc(c: ^Config, h: os.Handle) {
 
 }
 
+// Converts an ini.Config into a valid Json string.
+// "key = value" becomes "key":"value",
+// "[section]" becomes "section":{ ... },
 write_to_json :: proc(c: ^Config) -> string {
-    return ""
+    output := strings.builder_make_none()
+    defer strings.builder_destroy(&output)
+
+    strings.write_string(&output, "{")
+
+    for key, value in c.keys {
+        if value.keys == nil {
+            strings.write_string(&output, "\"")
+            strings.write_string(&output, key)
+            strings.write_string(&output, "\"")
+            strings.write_string(&output, ":")
+            strings.write_string(&output, "\"")
+            strings.write_string(&output, value.value)
+            strings.write_string(&output, "\"")
+            strings.write_string(&output, ",")
+        } else {
+            strings.write_string(&output, "\"")
+            strings.write_string(&output, key)
+            strings.write_string(&output, "\"")
+            strings.write_string(&output, ":")
+            section := write_to_json(value)
+            strings.write_string(&output, section)
+            delete(section)
+            strings.write_string(&output, ",")
+        }
+    }
+
+    strings.pop_rune(&output)
+    strings.write_string(&output, "}")
+
+    return strings.clone(strings.to_string(output))
 }
