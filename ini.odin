@@ -24,16 +24,18 @@ new_config :: proc(name: string) -> ^Config {
 destroy_config :: proc(c: ^Config) {
     if c == nil do return
 
-    for k, v in c.keys {
-        if v.keys == nil {
-            delete(k)
-            delete(v.value)
-            free(v)
-        } else {
-            destroy_config(v)
+    if c.keys != nil {
+        for k, v in c.keys {
+            if v.keys == nil {
+                //delete(k)
+                delete(v.value)
+                free(v)
+            } else {
+                destroy_config(v)
+            }
         }
+        delete(c.keys)
     }
-    delete(c.keys)
     delete(c.value)
     free(c)
 }
@@ -55,17 +57,15 @@ set :: proc{set_key, set_section}
 set_key :: proc(c: ^Config, key: string, value: string) -> bool {
     if c == nil || has_key(c, key) do return false
 
-    key_heap := strings.clone(key)
-    c.keys[key_heap] = new(Config)
-    c.keys[key_heap].value = strings.clone(value)
+    c.keys[key] = new(Config)
+    c.keys[key].value = strings.clone(value)
     return true
 }
 
 // Sets the value of a given key (specifically for sections).
 set_section :: proc(c: ^Config, key: string, value: ^Config) -> bool {
     if c == nil || value == nil || has_key(c, key) do return false
-    key_heap := strings.clone(key)
-    c.keys[key_heap] = value
+    c.keys[key] = value
     return true
 }
 
@@ -96,9 +96,11 @@ is_section :: proc(c: ^Config, name: string) -> bool {
     return has_key(c, name) && c.keys[name].keys != nil
 }
 
-// Removes a key/section from a config/section
+// Removes a key from a config/section
 remove :: proc(c: ^Config, name: string) -> bool {
     if !has_key(c, name) do return false
+    value := c.keys[name]
+    destroy_config(value)
     delete_key(&c.keys, name)
     return true
 }
