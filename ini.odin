@@ -104,11 +104,3 @@ remove :: proc(c: ^Config, name: string) -> bool {
     delete_key(&c.keys, name)
     return true
 }
-
-// Removes all keys and sections from a config
-clear :: proc(c: ^^Config) {
-    if c == nil || c^ == nil do return
-    temp := new_config(strings.clone(c^.value))
-    destroy_config(c^)
-    c^ = temp
-}
