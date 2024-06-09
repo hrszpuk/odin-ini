@@ -11,6 +11,12 @@ Config :: struct {
     keys: map[string]^Config,
 }
 
+// Sections are treated the same as the whole Config.
+// Added these so its more clear for anyone who does not know that fact.
+Section :: Config
+new_section :: proc{new_config}
+destroy_section :: proc{destroy_config}
+
 // Creates a new ini config and returns a pointer to it.
 new_config :: proc(name: string) -> ^Config {
     p := new(Config)
@@ -46,7 +52,9 @@ add_section :: proc(c: ^Config, name: string) -> (^Config, bool) #optional_ok {
     s := new(Config)
     s.value = strings.clone(name)
     s.keys = make(map[string]^Config)
+
     c.keys[name] = s
+
     return s, true
 }
 

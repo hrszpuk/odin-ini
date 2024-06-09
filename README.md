@@ -1,5 +1,5 @@
 # Odin-ini
-A fast, easy to use, and customisable, INI serialiser and deserialiser for the Odin programming language.
+A fast, easy to use, and configurable, INI serialiser and deserialiser for the Odin programming language.
 
 ```odin 
 package main
@@ -8,7 +8,11 @@ import ini "path/to/odin-ini"
 import "core:fmt"
 
 main :: proc() {
+    ini.Options.Rules.AllowNestedSections = true
+    ini.Options.Symbols.Comment = '#'
+    
     config := ini.read_from_file("config.ini")
+    defer ini.destroy_config(config)
     
     ini.set(config, "example", "yes")
     ini.get(config, "example") // "yes"
@@ -21,7 +25,6 @@ main :: proc() {
     fmt.println(s)
     
     delete(s)
-    ini.destroy_config(config)
 }
 ```
 
@@ -70,8 +73,9 @@ import ini "path/to/odin-ini"
 import "core:fmt"
 
 main :: proc() {
-    // Customise different ini options
-    ini.Options.Syntax.IgnoreCaseSensitivity = true
+    // Configure different ini options
+    ini.Options.Rules.AllowNestedSections = true
+    ini.Options.Symbols.Comment = '#'
     
     // config := ini.new_config("config.ini")
     config := ini.read_from_file("config.ini")

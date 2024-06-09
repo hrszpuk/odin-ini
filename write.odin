@@ -6,6 +6,8 @@ import "core:fmt"
 
 // Converts an ini config to a string (key=value, [section], etc)
 write_to_string :: proc(c: ^Config, prefix := false) -> string {
+    if c == nil || c.keys == nil do return "" // I HOPE THIS WILL STOP THE VOICES FROM SCREAMING AT ME
+
     keys := strings.builder_make_none()
     defer strings.builder_destroy(&keys)
 
@@ -42,14 +44,47 @@ write_to_string :: proc(c: ^Config, prefix := false) -> string {
     return strings.clone(strings.to_string(keys))
 }
 
-write_to_file :: proc(c: ^Config, filename := "config.ini") {
-
+// Write the ini.Config to a file at the given path.
+// If no file is found one will be created (hopefully).
+write_to_file :: proc(c: ^Config, filename: string) -> bool {
+    out := write_to_string(c)
+    defer delete(out)
+    return os.write_entire_file(filename, transmute([]u8)out)
 }
 
-write_to_handle :: proc(c: ^Config, h: os.Handle) {
-
-}
-
+// Converts an ini.Config into a valid Json string.
+// "key = value" becomes "key":"value",
+// "[section]" becomes "section":{ ... },
 write_to_json :: proc(c: ^Config) -> string {
-    return ""
+    output := strings.builder_make_none()
+    defer strings.builder_destroy(&output)
+
+    strings.write_string(&output, "{")
+
+    for key, value in c.keys {
+        if value.keys == nil {
+            strings.write_string(&output, "\"")
+            strings.write_string(&output, key)
+            strings.write_string(&output, "\"")
+            strings.write_string(&output, ":")
+            strings.write_string(&output, "\"")
+            strings.write_string(&output, value.value)
+            strings.write_string(&output, "\"")
+            strings.write_string(&output, ",")
+        } else {
+            strings.write_string(&output, "\"")
+            strings.write_string(&output, key)
+            strings.write_string(&output, "\"")
+            strings.write_string(&output, ":")
+            section := write_to_json(value)
+            strings.write_string(&output, section)
+            delete(section)
+            strings.write_string(&output, ",")
+        }
+    }
+
+    strings.pop_rune(&output)
+    strings.write_string(&output, "}")
+
+    return strings.clone(strings.to_string(output))
 }
