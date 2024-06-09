@@ -88,3 +88,15 @@ has_key :: proc(c: ^Config, name: string) -> bool {
 is_section :: proc(c: ^Config, name: string) -> bool {
     return has_key(c, name) && c.keys[name].keys == nil
 }
+
+// Removes a key/section from a config/section
+remove :: proc(c: ^Config, name: string) {
+    delete_key(&c.keys, name)
+}
+
+// Removes all keys and sections from a config
+clear :: proc(c: ^Config) {
+    temp = new_config(strings.clone(c.name))
+    destroy_config(c)
+    c = temp
+}
