@@ -6,6 +6,8 @@ import "core:fmt"
 
 // Converts an ini config to a string (key=value, [section], etc)
 write_to_string :: proc(c: ^Config, prefix := false) -> string {
+    if c == nil || c.keys == nil do return "" // I HOPE THIS WILL STOP THE VOICES FROM SCREAMING AT ME
+
     keys := strings.builder_make_none()
     defer strings.builder_destroy(&keys)
 
@@ -42,12 +44,12 @@ write_to_string :: proc(c: ^Config, prefix := false) -> string {
     return strings.clone(strings.to_string(keys))
 }
 
-write_to_file :: proc(c: ^Config, filename: string) {
-
-}
-
-write_to_handle :: proc(c: ^Config, h: os.Handle) {
-
+// Write the ini.Config to a file at the given path.
+// If no file is found one will be created (hopefully).
+write_to_file :: proc(c: ^Config, filename: string) -> bool {
+    out := write_to_string(c)
+    defer delete(out)
+    return os.write_entire_file(filename, transmute([]u8)out)
 }
 
 // Converts an ini.Config into a valid Json string.
