@@ -87,13 +87,13 @@ get_section :: proc(c: ^Config, name: string) -> (^Config, bool) #optional_ok {
 
 // Checks if a key exists in a given config
 has_key :: proc(c: ^Config, name: string) -> bool {
-    if c != nil || c.keys == nil do return false
+    if c == nil || c.keys == nil do return false
     return name in c.keys
 }
 
 // Checks if a key exists in a given config and if it is a section.
 is_section :: proc(c: ^Config, name: string) -> bool {
-    return has_key(c, name) && c.keys[name].keys == nil
+    return has_key(c, name) && c.keys[name].keys != nil
 }
 
 // Removes a key/section from a config/section
@@ -105,7 +105,7 @@ remove :: proc(c: ^Config, name: string) -> bool {
 
 // Removes all keys and sections from a config
 clear :: proc(c: ^^Config) {
-    if c == nil do return
+    if c == nil || c^ == nil do return
     temp := new_config(strings.clone(c^.value))
     destroy_config(c^)
     c^ = temp
