@@ -38,17 +38,12 @@ IniOptions :: struct {
         IgnoreDelimiterPadding: bool,   // Whether delimiter padding is ignored or not (default: true)
         IgnoreSectionNamePadding: bool, // Whether section name padding is ignored or not (default: true)
         IgnoreValueQuotes: bool,        // Whether the quotes around a value are counted as part of the value or not (default: true)
-
-        // If true the rules above are strictly enforced by the parser and parsing will be abandoned if they are not met.
-        // If false, the rules are treated more like "guidelines" and the parser will opt to ignore errors instead of abandoning
-        Strict: bool,       // default: false
     },
 
     Debug: bool,    // Debugging mode will print debug information (default: false)
 }
 
 // These options can be changed at runtime.
-// The default values are mentioned above.
 Options : IniOptions = {
     { '=', ';', '[', ']', '.' },
     {
@@ -64,8 +59,6 @@ Options : IniOptions = {
         false,
         true,
         true,
-
-        false
- },
+    },
     false, // Debug
 }

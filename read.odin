@@ -3,7 +3,7 @@ package ini
 import "core:fmt"
 import "core:os"
 
-read_from_string :: proc(content: string, name := "config.ini") -> ^Config {
+read_from_string :: proc(content: string, name := "config") -> ^Config {
     config := new_config(name)
 
     l := new_lexer(content)
@@ -34,12 +34,4 @@ read_from_file :: proc(path: string) -> (config: ^Config = nil, ok := false) #op
         return read_from_string(string(data), path), true
     }
     return
-}
-
-read_from_handle :: proc(path: string) -> (config: ^Config = nil, ok := false) #optional_ok {
-    return nil, false
-}
-
-read_from_json :: proc(json_str: string) -> (config: ^Config = nil, ok := false) #optional_ok {
-    return nil, true
 }
