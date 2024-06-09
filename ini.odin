@@ -22,46 +22,50 @@ new_config :: proc(name: string) -> ^Config {
 
 // Deletes all keys and values in the config, and the config itself.
 destroy_config :: proc(c: ^Config) {
-    for k, v in c.keys {
-        if v.keys == nil {
-            delete(k)
-            delete(v.value)
-            free(v)
-        } else {
-            destroy_config(v)
+    if c == nil do return
+
+    if c.keys != nil {
+        for k, v in c.keys {
+            if v.keys == nil {
+                //delete(k)
+                delete(v.value)
+                free(v)
+            } else {
+                destroy_config(v)
+            }
         }
+        delete(c.keys)
     }
-    delete(c.keys)
     delete(c.value)
     free(c)
 }
 
 // Adds a new section to the given config and returns a pointer to it.
-add_section :: proc(c: ^Config, name: string) -> ^Config {
+add_section :: proc(c: ^Config, name: string) -> (^Config, bool) #optional_ok {
+    if c == nil || has_key(c, name) do return nil, false
     s := new(Config)
     s.value = strings.clone(name)
     s.keys = make(map[string]^Config)
     c.keys[name] = s
-    return s
+    return s, true
 }
 
 // Sets the value of a given key.
 set :: proc{set_key, set_section}
 
 // Sets the value of a given key.
-set_key :: proc(c: ^Config, key: string, value: string) {
-    key_heap := strings.clone(key)
-    c.keys[key_heap] = new(Config)
-    c.keys[key_heap].value = strings.clone(value)
+set_key :: proc(c: ^Config, key: string, value: string) -> bool {
+    if c == nil || has_key(c, key) do return false
+
+    c.keys[key] = new(Config)
+    c.keys[key].value = strings.clone(value)
+    return true
 }
 
 // Sets the value of a given key (specifically for sections).
 set_section :: proc(c: ^Config, key: string, value: ^Config) -> bool {
-    if value == nil {
-        return false
-    }
-    key_heap := strings.clone(key)
-    c.keys[key_heap] = value
+    if c == nil || value == nil || has_key(c, key) do return false
+    c.keys[key] = value
     return true
 }
 
@@ -69,13 +73,51 @@ set_section :: proc(c: ^Config, key: string, value: ^Config) -> bool {
 get :: proc{get_key}
 
 // Returns the value of a key in the config. Does not support returning sections.
-get_key :: proc(c: ^Config, key: string) -> string {
-    return c.keys[key].value
+get_key :: proc(c: ^Config, key: string) -> (string, bool) #optional_ok {
+    if c == nil do return "", false
+    return c.keys[key].value, true
 }
 
 // Finds a section by name and returns a pointer to it.
 // If no section matches the name, it returns nil.
-get_section :: proc(c: ^Config, name: string) -> ^Config {
-    return c.keys[name]
+get_section :: proc(c: ^Config, name: string) -> (^Config, bool) #optional_ok {
+    if c == nil do return nil, false
+    return c.keys[name], true
 }
 
+// Checks if a key exists in a given config
+has_key :: proc(c: ^Config, name: string) -> bool {
+    if c == nil || c.keys == nil do return false
+    return name in c.keys
+}
+
+// Checks if a key exists in a given config and if it is a section.
+is_section :: proc(c: ^Config, name: string) -> bool {
+    return has_key(c, name) && c.keys[name].keys != nil
+}
+
+// Removes a key from a config/section
+remove :: proc(c: ^Config, name: string) -> bool {
+    if !has_key(c, name) do return false
+    value := c.keys[name]
+    destroy_config(value)
+    delete_key(&c.keys, name)
+    return true
+}
+
+// Removes a key from a config/section and returns the value
+pop_key :: proc(c: ^Config, name: string) -> (string, bool) #optional_ok {
+    if !has_key(c, name) do return "", false
+    value := c.keys[name]
+    defer free(value)
+    delete_key(&c.keys, name)
+    return value.value, true
+}
+
+// Removes a key from a config/section
+pop_section :: proc(c: ^Config, name: string) -> (^Config, bool) #optional_ok  {
+    if !has_key(c, name) do return nil, false
+    value := c.keys[name]
+    delete_key(&c.keys, name)
+    return value, true
+}

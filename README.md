@@ -1,5 +1,5 @@
-# odin-ini
-A fast, easy to use, and customisable, ini serialiser and deserialiser.
+# Odin-ini
+A fast, easy to use, and customisable, INI serialiser and deserialiser for the Odin programming language.
 
 ```odin 
 package main
