@@ -9,13 +9,21 @@ import "core:strings"
 Config :: struct {
     value: string,
     keys: map[string]^Config,
+    order: [dynamic]string
 }
+
+// Sections are treated the same as the whole Config.
+// Added these so its more clear for anyone who does not know that fact.
+Section :: Config
+new_section :: proc{new_config}
+destroy_section :: proc{destroy_config}
 
 // Creates a new ini config and returns a pointer to it.
 new_config :: proc(name: string) -> ^Config {
     p := new(Config)
     p.value = strings.clone(name)
     p.keys = make(map[string]^Config)
+    p.order = make([dynamic]string)
 
     return p
 }
@@ -37,6 +45,7 @@ destroy_config :: proc(c: ^Config) {
         delete(c.keys)
     }
     delete(c.value)
+    delete(c.order)
     free(c)
 }
 
@@ -46,7 +55,9 @@ add_section :: proc(c: ^Config, name: string) -> (^Config, bool) #optional_ok {
     s := new(Config)
     s.value = strings.clone(name)
     s.keys = make(map[string]^Config)
+    s.order = make([dynamic]string)
     c.keys[name] = s
+
     return s, true
 }
 
