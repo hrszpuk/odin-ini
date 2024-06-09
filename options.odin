@@ -24,6 +24,8 @@ IniOptions :: struct {
     // Rules
     // - Allows you to allow/disallow/ignore certain rules.
     Rules: struct {
+        // If you are reading these rules and think there are more that could be added open an issue (https://github.com/hrszpuk/odin-ini)
+
         AllowEmptyValues: bool,         // Whether empty values are allowed or not (default: true)
         AllowEmptySections: bool,       // Whether empty sections are allowed or not (default: true)
         AllowNestedSections: bool,      // Whether nested sections are allowed or not (default: true)
@@ -39,7 +41,7 @@ IniOptions :: struct {
 
         // If true the rules above are strictly enforced by the parser and parsing will be abandoned if they are not met.
         // If false, the rules are treated more like "guidelines" and the parser will opt to ignore errors instead of abandoning
-        StrictParsingRules: bool,       // default: false
+        Strict: bool,       // default: false
     },
 
     Debug: bool,    // Debugging mode will print debug information (default: false)
