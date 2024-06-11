@@ -3,6 +3,8 @@ package ini
 import "core:fmt"
 import "core:unicode/utf8"
 
+// Lexer will take the INI text and convert it to a list of tokens.
+// "key = value" = [Token{"key", .IDENTIFIER, ...}, Token{"=", .DELIMITER, ...}, Token{"value", .IDENTIFIER, ...}]
 Lexer :: struct {
     tokens: [dynamic]Token,
     input: []rune,
@@ -11,6 +13,7 @@ Lexer :: struct {
     col: int,
 }
 
+// Creates a new lexer with the given input and returns a pointer to it.
 new_lexer :: proc(input: string) -> ^Lexer {
     l := new(Lexer)
     l.tokens = make([dynamic]Token, 0, len(input)/2)
@@ -21,23 +24,39 @@ new_lexer :: proc(input: string) -> ^Lexer {
     return l
 }
 
+// Produces the dynamic array of tokens from the input stored in the lexer struct
 lex :: proc(l: ^Lexer) -> [dynamic]Token {
-    c: rune
+    c: rune // Current character
+
     for l.pos < len(l.input) {
+
+        // Most symbols can be directly added, identifiers and comments are lexed in their own functions
         switch c = next(l); c {
-        case '\n': append(&l.tokens, Token{.EOL, "\n", l.line, l.col})
-        case Options.Symbols.Comment: append(&l.tokens, lexComment(l))
-        case Options.Symbols.SectionRight:
+
+        case Options.Symbols.Comment: // Defaults to ;
+            append(&l.tokens, lexId(l))
+
+        case Options.Symbols.SectionRight: // Defaults to ]
             s, i := utf8.encode_rune(Options.Symbols.SectionRight)
             append(&l.tokens, Token{.SECTION_RIGHT, string(s[:i]), l.line, l.col})
-        case Options.Symbols.SectionLeft:
+
+        case Options.Symbols.SectionLeft: // Defaults to [
             s, i := utf8.encode_rune(Options.Symbols.SectionLeft)
             append(&l.tokens, Token{.SECTION_LEFT, string(s[:i]), l.line, l.col})
-        case Options.Symbols.Delimiter:
+
+        case Options.Symbols.Delimiter: // Defaults to =
             s, i := utf8.encode_rune(Options.Symbols.Delimiter)
             append(&l.tokens, Token{.DELIMITER, string(s[:i]), l.line, l.col})
-        case ' ', '\t', '\r': break
-        case: append(&l.tokens, lexId(l))
+
+        case '\n':
+            append(&l.tokens, Token{.EOL, "\n", l.line, l.col})
+
+        // Ignore whitespace
+        case ' ', '\t', '\r':
+            break
+
+        case:
+            append(&l.tokens, lexId(l))
         }
     }
 
@@ -46,32 +65,21 @@ lex :: proc(l: ^Lexer) -> [dynamic]Token {
     return l.tokens
 }
 
+// Tokenises identifiers (anything that is not whitespace or in Options.Symbols)
+// This also lexs comments btw
 lexId :: proc(l: ^Lexer) -> Token {
     start := l.pos - 1
 
     for l.pos < len(l.input) {
         c := next(l)
-        if c == 0 || c == '\n' || c == Options.Symbols.SectionRight || c == Options.Symbols.SectionLeft || c == Options.Symbols.SectionRight {
-            back(l)
-            break
-        }
-    }
 
-    return Token{.IDENTIFIER, utf8.runes_to_string(l.input[start:l.pos]), l.line, l.col}
-}
-
-lexComment :: proc(l: ^Lexer) -> Token {
-    start := l.pos - 1
-
-    for l.pos < len(l.input) {
-        c := next(l)
         if c == 0 || c == '\n' {
             back(l)
             break
         }
     }
 
-    return Token{.COMMENT, utf8.runes_to_string(l.input[start:l.pos]), l.line, l.col}
+    return Token{.IDENTIFIER, utf8.runes_to_string(l.input[start:l.pos]), l.line, l.col}
 }
 
 back :: proc(l: ^Lexer) {
