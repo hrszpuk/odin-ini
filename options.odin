@@ -54,8 +54,6 @@ IniOptions :: struct {
         GenerateCommentsJson: bool,                 // Whether to generate comments in json or not (default: false)
         GenerateCommentsNameJson: string,           // The name of the comment field if generating in json (default: "__comment__")
     },
-
-    Debug: bool,    // Debugging mode will print debug information (default: false)
 }
 
 // These options can be changed at runtime.
@@ -88,5 +86,4 @@ Options : IniOptions = {
         false,
         "__comment__",
     },
-    false, // Debug
 }
