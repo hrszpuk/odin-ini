@@ -25,8 +25,8 @@ parse :: proc(p: ^Parser) {
     for p.pos < len(p.tokens) {
         t = p.tokens[p.pos]
         #partial switch t.type {
-        case .LSB: parse_section(p)
-        case .ID: parse_key(p)
+        case .SECTION_LEFT: parse_section(p)
+        case .IDENTIFIER: parse_key(p)
         case .COMMENT: p.pos += 1 // TODO Add comments to config?
         case .EOL: p.pos += 1
         case .EOF: return
@@ -59,7 +59,7 @@ parse_section :: proc(p: ^Parser) {
     p.pos += 1
     section_name := strings.clone(p.tokens[p.pos].value)
     p.pos += 1
-    if p.tokens[p.pos].type != .RSB {
+    if p.tokens[p.pos].type != .SECTION_RIGHT {
         fmt.println("Expected closing bracket")
         return
     }
