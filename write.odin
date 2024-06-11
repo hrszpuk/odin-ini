@@ -16,24 +16,26 @@ write_to_string :: proc(c: ^Config, prefix := false) -> string {
 
     for key, value in c.keys {
         if value.keys != nil {
-            strings.write_string(&sections, "\n[")
+            strings.write_string(&sections, "\n")
+            strings.write_rune(&sections, Options.Symbols.SectionLeft)
             if prefix {
-                section_head := fmt.aprintf("%s.%s", c.value, value.value)
+                section_head := fmt.aprintf("%s%v%s", c.value, Options.Symbols.NestedSection, value.value)
                 strings.write_string(&sections, section_head)
-                new_value := fmt.aprintf("%s.%s", c.value, value.value)
+                new_value := fmt.aprintf("%s%v%s", c.value, Options.Symbols.NestedSection, value.value)
                 delete(value.value)
                 value.value = new_value
                 delete(section_head)
             } else {
                 strings.write_string(&sections, value.value)
             }
-            strings.write_string(&sections, "]\n")
+            strings.write_rune(&sections, Options.Symbols.SectionRight)
+            strings.write_string(&sections, "\n")
             section := write_to_string(value, true)
             strings.write_string(&sections, section)
             delete(section)
         } else {
             strings.write_string(&keys, key)
-            strings.write_string(&keys, "=")
+            strings.write_rune(&keys, Options.Symbols.Delimiter)
             strings.write_string(&keys, value.value)
             strings.write_string(&keys, "\n")
         }
