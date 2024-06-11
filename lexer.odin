@@ -26,10 +26,16 @@ lex :: proc(l: ^Lexer) -> [dynamic]Token {
     for l.pos < len(l.input) {
         switch c = next(l); c {
         case '\n': append(&l.tokens, Token{.EOL, "\n", l.line, l.col})
-        case ';', '#': append(&l.tokens, Token{.COMMENT, lexId(l).value, l.line, l.col})
-        case ']': append(&l.tokens, Token{.RSB, "]", l.line, l.col})
-        case '[': append(&l.tokens, Token{.LSB, "[", l.line, l.col})
-        case '=', ':': append(&l.tokens, Token{.DELIMITER, "=", l.line, l.col})
+        case Options.Symbols.Comment: append(&l.tokens, lexComment(l))
+        case Options.Symbols.SectionRight:
+            s, i := utf8.encode_rune(Options.Symbols.SectionRight)
+            append(&l.tokens, Token{.SECTION_RIGHT, string(s[:i]), l.line, l.col})
+        case Options.Symbols.SectionLeft:
+            s, i := utf8.encode_rune(Options.Symbols.SectionLeft)
+            append(&l.tokens, Token{.SECTION_LEFT, string(s[:i]), l.line, l.col})
+        case Options.Symbols.Delimiter:
+            s, i := utf8.encode_rune(Options.Symbols.Delimiter)
+            append(&l.tokens, Token{.DELIMITER, string(s[:i]), l.line, l.col})
         case ' ', '\t', '\r': break
         case: append(&l.tokens, lexId(l))
         }
@@ -45,13 +51,13 @@ lexId :: proc(l: ^Lexer) -> Token {
 
     for l.pos < len(l.input) {
         c := next(l)
-        if c == 0 || c == '\n' || c == '[' || c == ']' || c == '=' {
+        if c == 0 || c == '\n' || c == Options.Symbols.SectionRight || c == Options.Symbols.SectionLeft || c == Options.Symbols.SectionRight {
             back(l)
             break
         }
     }
 
-    return Token{.ID, utf8.runes_to_string(l.input[start:l.pos]), l.line, l.col}
+    return Token{.IDENTIFIER, utf8.runes_to_string(l.input[start:l.pos]), l.line, l.col}
 }
 
 lexComment :: proc(l: ^Lexer) -> Token {
@@ -65,7 +71,7 @@ lexComment :: proc(l: ^Lexer) -> Token {
         }
     }
 
-    return Token{.ID, utf8.runes_to_string(l.input[start:l.pos]), l.line, l.col}
+    return Token{.COMMENT, utf8.runes_to_string(l.input[start:l.pos]), l.line, l.col}
 }
 
 back :: proc(l: ^Lexer) {
