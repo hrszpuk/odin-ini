@@ -2,7 +2,7 @@ package ini
 
 import "core:bufio"
 
-// Ini is not standardised. Therefore I've given the programmer the ability to interchange symbols and rules.
+// Ini is not standardised. Therefore I've let the user interchange symbols and rules that will apply during pasing/serialisation.
 IniOptions :: struct {
 
     // Symbols
@@ -31,10 +31,10 @@ IniOptions :: struct {
         AllowNestedSections: bool,      // Whether nested sections are allowed or not (default: true)
         AllowSpacesInKeys: bool,        // Whether spaces are allowed to be a part of keys or not (default: false)
         AllowSpacesInValues: bool,      // Whether spaces are allowed to be a part of values or not (default: true)
+        AllowDuplicateKeys: bool,      // Whether duplicate keys are ignored or not (default: false)
+        AllowDuplicateSections: bool,  // Whether duplicate sections are ignored or not (default: false)
 
         IgnoreCaseSensitivity: bool,    // Whether case sensitivity is ignored or not (default: false)
-        IgnoreDuplicateKeys: bool,      // Whether duplicate keys are ignored or not (default: false)
-        IgnoreDuplicateSections: bool,  // Whether duplicate sections are ignored or not (default: false)
         IgnoreDelimiterPadding: bool,   // Whether delimiter padding is ignored or not (default: true)
         IgnoreSectionNamePadding: bool, // Whether section name padding is ignored or not (default: true)
         IgnoreValueQuotes: bool,        // Whether the quotes around a value are counted as part of the value or not (default: true)
