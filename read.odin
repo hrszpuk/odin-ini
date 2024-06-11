@@ -18,7 +18,7 @@ read_from_string :: proc(content: string, name := "config") -> ^Config {
     parse(p)
 
     for token in tokens {
-        if token.type == .ID {
+        if token.type == .IDENTIFIER {
             delete(token.value)
         }
     }
