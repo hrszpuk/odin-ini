@@ -2,6 +2,7 @@ package ini
 
 import "core:fmt"
 import "core:unicode/utf8"
+import "core:log"
 
 // Lexer will take the INI text and convert it to a list of tokens.
 // "key = value" = [Token{"key", .IDENTIFIER, ...}, Token{"=", .DELIMITER, ...}, Token{"value", .IDENTIFIER, ...}]
@@ -15,6 +16,7 @@ Lexer :: struct {
 
 // Creates a new lexer with the given input and returns a pointer to it.
 new_lexer :: proc(input: string) -> ^Lexer {
+    log.debugf("Created ^Lexer with given string of length %d", len(input))
     l := new(Lexer)
     l.tokens = make([dynamic]Token, 0, len(input)/2)
     l.input = utf8.string_to_runes(input)
@@ -34,17 +36,21 @@ lex :: proc(l: ^Lexer) -> [dynamic]Token {
         switch c = next(l); c {
 
         case Options.Symbols.Comment: // Defaults to ;
+            log.debug("Found comment")
             append(&l.tokens, lexId(l))
 
         case Options.Symbols.SectionRight: // Defaults to ]
+            log.debug("Found section right")
             s, i := utf8.encode_rune(Options.Symbols.SectionRight)
             append(&l.tokens, Token{.SECTION_RIGHT, string(s[:i]), l.line, l.col})
 
         case Options.Symbols.SectionLeft: // Defaults to [
+            log.debug("Found section left")
             s, i := utf8.encode_rune(Options.Symbols.SectionLeft)
             append(&l.tokens, Token{.SECTION_LEFT, string(s[:i]), l.line, l.col})
 
         case Options.Symbols.Delimiter: // Defaults to =
+            log.debug("Found delimiter")
             s, i := utf8.encode_rune(Options.Symbols.Delimiter)
             append(&l.tokens, Token{.DELIMITER, string(s[:i]), l.line, l.col})
 
@@ -73,13 +79,21 @@ lexId :: proc(l: ^Lexer) -> Token {
     for l.pos < len(l.input) {
         c := next(l)
 
-        if c == 0 || c == '\n' {
+        if c == 0 ||
+        c == '\n' ||
+        c == Options.Symbols.Delimiter ||
+        c == Options.Symbols.SectionRight ||
+        c == Options.Symbols.SectionLeft ||
+        c == Options.Symbols.Delimiter ||
+        c == Options.Symbols.Comment {
             back(l)
             break
         }
     }
 
-    return Token{.IDENTIFIER, utf8.runes_to_string(l.input[start:l.pos]), l.line, l.col}
+    str := utf8.runes_to_string(l.input[start:l.pos])
+    log.debugf("Found identifier '%s' @%d:%d", str, l.line, l.col)
+    return Token{.IDENTIFIER, str, l.line, l.col}
 }
 
 back :: proc(l: ^Lexer) {
