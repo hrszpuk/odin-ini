@@ -3,14 +3,13 @@ package ini
 import "core:strings"
 
 TokenType :: enum {
-    ID,             // Literally anything
-    QM,             // "
-    LSB,            // [
-    RSB,            // ]
-    COMMENT,        // # or ;
-    DELIMITER,      // = or :
-    EOL,            // \n
-    EOF             // End of file
+    IDENTIFIER,
+    SECTION_LEFT,
+    SECTION_RIGHT,
+    COMMENT,
+    DELIMITER,
+    EOL,
+    EOF
 }
 
 Token :: struct {
